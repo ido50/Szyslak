@@ -44,7 +44,8 @@ module.exports = function(grunt) {
 		if (fs.existsSync('./src/'+options.data_dir)) {
 			var jsons = fs.readdirSync('./src/'+options.data_dir);
 			for (var i = 0; i < jsons.length; i++) {
-				data[path.basename(jsons[i], '.json')] = require('./src/'+options.data_dir+'/'+jsons[i]);
+				grunt.log.writeln("Parsing data file "+jsons[i]);
+				data[path.basename(jsons[i], '.json')] = grunt.file.readJSON('./src/'+options.data_dir+'/'+jsons[i]);
 			}
 		}
 
@@ -53,6 +54,7 @@ module.exports = function(grunt) {
 		if (fs.existsSync('./src/'+options.templates_dir)) {
 			var templates = fs.readdirSync('./src/'+options.templates_dir);
 			for (i = 0; i < templates.length; i++) {
+				grunt.log.writeln("Compiling template "+templates[i]);
 				var html = grunt.file.read('./src/'+options.templates_dir+'/'+templates[i]);
 				compiled[templates[i]] = _.template(html);
 			}
