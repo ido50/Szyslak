@@ -18,17 +18,12 @@ module.exports = function(grunt) {
 			options: {
 				jshintrc: '.jshintrc'
 			}
-		},
-		clean: {
-			tests: ['tmp']
 		}
 	});
 
 	grunt.loadTasks('tasks');
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-clean');
 
-	grunt.registerTask('test', ['clean', 'szyslak']);
 	grunt.registerTask('default', ['jshint']);
 };
