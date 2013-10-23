@@ -121,11 +121,14 @@ module.exports = function(grunt) {
 
 		// copy vendor files (if any)
 		if (grunt.file.isDir('./src/'+options.vendor_dir) && options.vendor_files) {
-			for (i = 0; i < options.vendor_files.length; i++) {
-				var inf = options.vendor_files[i];
-				var otf = path.basename(inf);
-				grunt.log.writeln("Copying vendor file "+inf+" to "+otf);
-				grunt.file.copy('./src/'+options.vendor_dir+'/'+inf, './dist/'+options.vendor_dir+'/'+otf);
+			var srcdest = grunt.file.expandMapping(options.vendor_files, './dist/'+options.vendor_dir, {
+				cwd: './src/'+options.vendor_dir,
+				flatten: true
+			});
+			for (i = 0; i < srcdest.length; i++) {
+				var file = srcdest[i];
+				grunt.log.writeln("Copying vendor file "+file.src+" to "+file.dest);
+				grunt.file.copy(file.src, file.dest);
 			}
 		}
 
