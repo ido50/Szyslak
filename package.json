@@ -1,7 +1,7 @@
 {
   "name": "szyslak",
   "description": "static site generator with an attitude",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/ido50/Szyslak",
   "author": {
     "name": "Ido Perlmuter",

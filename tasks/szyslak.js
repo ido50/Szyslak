@@ -88,7 +88,7 @@ module.exports = function(grunt) {
 				var context = {
 					path: rn,
 					title: rn,
-					base: path.basename(rn, '.html')
+					base: rn.replace(".html", "")
 				};
 				_.merge(context, parsed, data);
 				context.__content = contents(context);
