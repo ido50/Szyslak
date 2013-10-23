@@ -1,12 +1,19 @@
 /*
- * szyslak
- * https://github.com/ido50/szyslak
+ * Szyslak
+ * https://github.com/ido50/Szyslak
  *
  * Copyright (c) 2013 Ido Perlmuter
  * Licensed under the GPLv3 license.
  */
 
 'use strict';
+
+/*
+ * TODO:
+ * =====
+ * 1. Break task into sub-tasks that can be called independantly
+ * 2. Do not attempt to minify css/js files that are already minified
+ */
 
 module.exports = function(grunt) {
 	var fs	= require('fs');
@@ -70,13 +77,14 @@ module.exports = function(grunt) {
 			}
 
 			if (/\.html$/.test(filename)) {
-				// this is a page we need to compile
+				// this is an html page we need to compile
 				grunt.log.writeln("Working on page "+rn);
 
 				// parse yaml front matter (if any)
 				var parsed = yfm.loadFront(grunt.file.read(abspath));
 				var contents = _.template(parsed.__content);
 
+				// create the context object
 				var context = {
 					path: rn,
 					title: rn,
