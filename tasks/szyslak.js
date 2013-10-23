@@ -24,13 +24,23 @@ module.exports = function(grunt) {
 			data_dir: "data"
 		});
 
+		/*
+		 * This task is broken into the following sub-tasks:
+		 * (actually, that's a lie, I'm just planning on
+		 *  breaking it down in the next version)
+		 * =================================================
+		 * 1. Loading JSON data files from the data directory
+		 * 2. Compiling lo-dash templates from the templates directory
+		 * 3. Copying vendor files from the vendor directory
+		 * 4. Going over all other files, compiling roole files
+		 *    into css if encountered, rendering html files into
+		 *    views, minifying css and js files, and copying all
+		 *    other files
+		 */
+
 		var data = {};
 		var compiled = {};
 		var i = 0;
-
-		function merge(src, dst) {
-			for (var attr in src) { dst[attr] = src[attr]; }
-		}
 
 		function compile_roole(file) {
 			roole.compile(grunt.file.read('./src/'+file), null, function(err, css) {
@@ -72,8 +82,7 @@ module.exports = function(grunt) {
 					title: rn,
 					base: path.basename(rn, '.html')
 				};
-				merge(parsed, context);
-				merge(data, context);
+				_.merge(context, parsed, data);
 				context.__content = contents(context);
 
 				var html = 'layout.html' in compiled ? compiled['layout.html'](context) : context.__content;
@@ -121,10 +130,26 @@ module.exports = function(grunt) {
 
 		// copy vendor files (if any)
 		if (grunt.file.isDir('./src/'+options.vendor_dir) && options.vendor_files) {
-			var srcdest = grunt.file.expandMapping(options.vendor_files, './dist/'+options.vendor_dir, {
-				cwd: './src/'+options.vendor_dir,
-				flatten: true
-			});
+			// options.vendor_files can either have strings, that are simply
+			// files to copy flattened into the vendor destination directory,
+			// or objects that define their own destinations
+			var flat = _.filter(options.vendor_files, function(i) { return !_.isPlainObject(i); });
+			var unfl = _.filter(options.vendor_files, function(i) { return _.isPlainObject(i); });
+			var srcdest = [];
+			if (flat.length) {
+				srcdest = grunt.file.expandMapping(flat, './dist/'+options.vendor_dir, {
+					cwd: './src/'+options.vendor_dir,
+					flatten: true
+				});
+			}
+			if (unfl.length) {
+				_.forEach(unfl, function(obj) {
+					srcdest = srcdest.concat(grunt.file.expandMapping(obj.src, './dist/'+options.vendor_dir+'/'+obj.dest, {
+						cwd: './src/'+options.vendor_dir,
+						flatten: true
+					}));
+				});
+			}
 			for (i = 0; i < srcdest.length; i++) {
 				var file = srcdest[i];
 				grunt.log.writeln("Copying vendor file "+file.src+" to "+file.dest);
