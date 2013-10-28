@@ -13,6 +13,8 @@
  * =====
  * 1. Break task into sub-tasks that can be called independantly
  * 2. Do not attempt to minify css/js files that are already minified
+ * 3. Add ability to add JSON files to every folder and have it available
+ *    only for HTML files within that folder
  */
 
 module.exports = function(grunt) {
@@ -34,7 +36,7 @@ module.exports = function(grunt) {
 		/*
 		 * This task is broken into the following sub-tasks:
 		 * (actually, that's a lie, I'm just planning on
-		 *  breaking it down in the next version)
+		 *  breaking it down in a future version)
 		 * =================================================
 		 * 1. Loading JSON data files from the data directory
 		 * 2. Compiling lo-dash templates from the templates directory
@@ -88,7 +90,10 @@ module.exports = function(grunt) {
 				var context = {
 					path: rn,
 					title: rn,
-					base: rn.replace(".html", "")
+					base: rn.replace(".html", ""),
+					include: function(template) {
+						return compiled[template](this);
+					}
 				};
 				_.merge(context, parsed, data);
 				context.__content = contents(context);

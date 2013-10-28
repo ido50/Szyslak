@@ -1,7 +1,7 @@
 {
   "name": "szyslak",
   "description": "static site generator with an attitude",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "homepage": "https://github.com/ido50/Szyslak",
   "author": {
     "name": "Ido Perlmuter",
@@ -38,6 +38,15 @@
     "grunt": "~0.4.0"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin",
+    "static site generator",
+    "blog",
+    "blog generator",
+    "grunt static site",
+    "grunt blog",
+    "grunt pages",
+    "static website",
+    "static",
+    "jekyll alternative"
   ]
 }

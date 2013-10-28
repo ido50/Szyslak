@@ -9,11 +9,10 @@ In my opinion, it is much better to have a framework that is adapted to your par
 ## Current Features
 
 * Automatic rendering of HTML files with [Lo-Dash](http://lodash.com/) templates.
+* Template nesting is supported.
 * Automatic compilation of [Roole](http://roole.org/) files into CSS.
 * Automatic minification of CSS files (with [clean-css](https://github.com/GoalSmashers/clean-css)) and JS files (with [UglifyJS](https://github.com/mishoo/UglifyJS2)).
 * Automatic parsing of JSON files and YAML/JSON Front Matter (with [yaml-front-matter](https://github.com/dworthen/js-yaml-front-matter)) in HTML files. JSON files are turned into objects that are available inside all HTML pages/templates. YAML/JSON Front Matter is available inside the specific HTML file only.
-
-Nested templating is not supported yet.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
@@ -161,11 +160,12 @@ The `szyslak` tasks employs the following process to generate the site:
 4. Szyslak goes over all other files and directories under `src/` (recursively of course), and performs the following:
 	- If a file has an `.html` extension, its front matter (either YAML or JSON) is parsed (it doesn't have to have any), and the HTML content is rendered with Lo-Dash.
 	
-	  A context object is available inside the template, which includes all data objects from step 1, all fields from the front matter (if any), and the following three keys:
+	  A context object is available inside the template, which includes all data objects from step 1, all fields from the front matter (if any), and the following four keys:
 	
 		- `path` - the relative path of the file inside `dist/`.
 		- `base` - the same as `path` but minus the extension.
 		- `title` - the same as `path`, it's just there to make sure every page has a title even if one was not provided in the front matter.
+		- `include(template_name)` - this function renders a template from the templates directory and embeds the output (example usage: `<%= include('header.html') %>`). The same context object will be available to the embedded template.
 	
 	  The resulting content is again rendered into the `layout.html` template (with the same context object). The resulting content is copied to the appropriate location in the `dist/` directory.
 	- If the file has a `.roo` extension, it is compiled to CSS and minified, before being copied.
