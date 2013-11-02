@@ -176,5 +176,6 @@ Note that apart from vendor files (see explanation above), directory structures 
 
 ## Release History
 
-* 2013-10-23   v1.0.1   Small bugfix with the base context variable.
+* 2013-10-28   v1.1.0   Added support for template nesting with the include function.
+* 2013-10-23   v1.0.1   Small bugfix with the base context variable.
 * 2013-10-23   v1.0.0   Initial release.
