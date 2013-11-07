@@ -19,6 +19,7 @@
 
 module.exports = function(grunt) {
 	var fs	= require('fs');
+	var os	= require('os');
 	var path	= require('path');
 	var roole	= require('roole');
 	var _		= require('lodash');
@@ -91,9 +92,13 @@ module.exports = function(grunt) {
 					path: rn,
 					title: rn,
 					base: rn.replace(".html", ""),
+					cwd: "./src/"+rn.replace(/\/[^\/]+$/, ""),
 					include: function(template) {
 						return compiled[template](this);
-					}
+					},
+					fs: fs,
+					os: os,
+					grunt: grunt
 				};
 				_.merge(context, parsed, data);
 				context.__content = contents(context);

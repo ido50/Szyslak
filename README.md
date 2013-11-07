@@ -165,7 +165,11 @@ The `szyslak` tasks employs the following process to generate the site:
 		- `path` - the relative path of the file inside `dist/`.
 		- `base` - the same as `path` but minus the extension.
 		- `title` - the same as `path`, it's just there to make sure every page has a title even if one was not provided in the front matter.
+		- `cwd` - the directory of the current file, including `src/` at the head.
 		- `include(template_name)` - this function renders a template from the templates directory and embeds the output (example usage: `<%= include('header.html') %>`). The same context object will be available to the embedded template.
+		- `fs` - an object of the [NodeJS File System Class](http://nodejs.org/api/fs.html).
+		- `os` - an object of the [NodeJS Operating System Class](http://nodejs.org/api/os.html).
+		- `grunt` - the grunt object, so you can use the grunt API, like `grunt.file`.
 	
 	  The resulting content is again rendered into the `layout.html` template (with the same context object). The resulting content is copied to the appropriate location in the `dist/` directory.
 	- If the file has a `.roo` extension, it is compiled to CSS and minified, before being copied.
@@ -176,6 +180,7 @@ Note that apart from vendor files (see explanation above), directory structures 
 
 ## Release History
 
+* 2013-11-08   v1.2.0   Added the cwd, fs, os and grunt context variables.
 * 2013-10-28   v1.1.0   Added support for template nesting with the include function.
 * 2013-10-23   v1.0.1   Small bugfix with the base context variable.
 * 2013-10-23   v1.0.0   Initial release.
