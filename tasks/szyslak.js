@@ -85,6 +85,22 @@ module.exports = function(grunt) {
 
 				// parse yaml front matter (if any)
 				var parsed = yfm.loadFront(grunt.file.read(abspath));
+
+				// did the page ask for child data?
+				if (parsed.needs_children) {
+					parsed.children = {};
+					var cwd = './src/'+subdir;
+					_.forEach(fs.readdirSync(cwd), function(dir) {
+						if (
+							grunt.file.isDir(cwd+'/'+dir) &&
+							grunt.file.exists(cwd+'/'+dir+'/index.html')
+						) {
+							parsed.children[dir] = yfm.loadFront(grunt.file.read(cwd+'/'+dir+'/index.html'));
+						}
+					});
+				}
+
+				// process content
 				var contents = _.template(parsed.__content);
 
 				// create the context object
@@ -93,6 +109,7 @@ module.exports = function(grunt) {
 					title: rn,
 					base: rn.replace(".html", ""),
 					cwd: "./src/"+rn.replace(/\/[^\/]+$/, ""),
+					relcwd: subdir,
 					include: function(template) {
 						return compiled[template](this);
 					},
@@ -102,6 +119,10 @@ module.exports = function(grunt) {
 				};
 				_.merge(context, parsed, data);
 				context.__content = contents(context);
+
+				if (context.template) {
+					context.__content = compiled[context.template](context);
+				}
 
 				var html = 'layout.html' in compiled ? compiled['layout.html'](context) : context.__content;
 				grunt.file.write(of, html);

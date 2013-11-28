@@ -166,10 +166,16 @@ The `szyslak` tasks employs the following process to generate the site:
 		- `base` - the same as `path` but minus the extension.
 		- `title` - the same as `path`, it's just there to make sure every page has a title even if one was not provided in the front matter.
 		- `cwd` - the directory of the current file, including `src/` at the head.
+		- `relcwd` - the same as `cwd`, minus the `src/` at the head.
 		- `include(template_name)` - this function renders a template from the templates directory and embeds the output (example usage: `<%= include('header.html') %>`). The same context object will be available to the embedded template.
 		- `fs` - an object of the [NodeJS File System Class](http://nodejs.org/api/fs.html).
 		- `os` - an object of the [NodeJS Operating System Class](http://nodejs.org/api/os.html).
 		- `grunt` - the grunt object, so you can use the [Grunt API](http://gruntjs.com/api/grunt), like `grunt.file`.
+		- `children` - see following paragraph.
+	
+	  If the YAML/JSON front matter of the file has a field called `needs_children` with a true value, Szyslak will look at all the subdirectories of the current working directory (just one level down) and look for a file named `index.html` in each of these directories. For all `index.html` files found, their front matter is loaded. An object with all these front matters will be added to the context object, under the field `children`. The keys of this object will be the names of the subdirectories, and the values are the parsed front matters.
+	
+	  If the YAML/JSON front matter of the file has a field called `template`, the content of the file will be rendered into that template before continuing to the next step. Notice this is not intended to replace the layout template. The rendered HTML will be the content rendered into the layout template. The same context object is available inside this template.
 	
 	  The resulting content is again rendered into the `layout.html` template (with the same context object). The resulting content is copied to the appropriate location in the `dist/` directory.
 	- If the file has a `.roo` extension, it is compiled to CSS and minified, before being copied.
@@ -180,6 +186,7 @@ Note that apart from vendor files (see explanation above), directory structures 
 
 ## Release History
 
+* 2013-11-28   v1.3.0   Added relcwd (in context), template & needs_children (in front matter).
 * 2013-11-08   v1.2.0   Added the cwd, fs, os and grunt context variables.
 * 2013-10-28   v1.1.0   Added support for template nesting with the include function.
 * 2013-10-23   v1.0.1   Small bugfix with the base context variable.
