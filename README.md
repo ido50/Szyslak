@@ -102,7 +102,7 @@ module.exports = function(grunt) {
 };
 ```
 
-As you can see in the above example, the szyslak task can receive a target argument. The target is a simple string you can provide to help change the way the website is compiled for different situations or targets. For example, when you compile the website on your personal computer for testing, the target could be "localhost" (which is the default if no target is provided). When compiling for your web server, the target may be something like "mydomain.com". The current target is available in pages and templates for your inspection and usage. An example where this may be useful is if your website utilizes the `<base>` element in its layout template:
+As you can see in the above example, the szyslak task can receive a target argument. The target is a simple string you can provide to help change the way the website is compiled for different situations or targets. For example, when you compile the website on your personal computer for testing, the target could be `localhost` (which is the default if no target is provided). When compiling for your web server, the target may be something like `mydomain.com`. The current target is available in pages and templates for your inspection and usage. An example where this may be useful is if your website utilizes the `<base>` element in its layout template:
 
 ```html
 <html>
@@ -116,7 +116,7 @@ As you can see in the above example, the szyslak task can receive a target argum
 </html>
 ```
 
-In the above example, the `href` attribute of the `base` element will hold "http://localhost/" when the `default` task is run, and "http://mydomain.com/" when the `production` task is run.
+In the above example, the `href` attribute of the `base` element will hold `http://localhost/` when the `default` task is run, and `http://mydomain.com/` when the `production` task is run.
 
 ### Options
 
