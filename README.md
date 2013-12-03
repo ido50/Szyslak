@@ -4,7 +4,7 @@
 
 Szyslak is a static site generated based on [Node.JS](http://nodejs.org/) and [Grunt](http://gruntjs.com/). It is designed for my personal needs and website building habits. While quite a lot of static site generators are available out there, I find that adapting yourself to them makes absolutely no sense. Having to structure my site's code according to the generator's own directory structure requirements alone kills these for me.
 
-In my opinion, it is much better to have a framework that is adapted to your particular needs and methodologies. If you need a static site generator, I encourage you to create your own. Don't use this (unless it really fits your needs). If anything, use this as a reference for creating your own static site generator (not that I claim this one is properly written).
+**Don't use this! Create your own!** In my opinion, it is much better to have a framework that is adapted to your particular needs and methodologies. If you need a static site generator, I encourage you to create your own. Don't use this (unless it really fits your needs). If anything, use this as a reference for creating your own static site generator (not that I claim this one is properly written).
 
 ## Current Features
 
@@ -39,6 +39,8 @@ Inside the source directory, the structure is basically whatever you want it to 
 * The same goes for templates. You don't have to use them, and by default they're expected to be in `src/templates/`.
 * And the same goes for vendor/third-party/bower-managed files. By default, they're expected to be in `src/vendor/`.
 
+The website will have a layout template, always called `layout.html`, and located in the templates directory.
+
 Here's an example directory structure:
 
 	src/
@@ -65,7 +67,7 @@ Here's an example directory structure:
 
 The szyslak task is the only task provided by this package. To use this task, add a section named `szyslak` to the data object passed into `grunt.initConfig()`. I recommended using the `clean` task from [grunt-contrib-clean](https://github.com/gruntjs/grunt-contrib-clean) to automatically purge the destination directory when running `grunt`.
 
-Here's an example Gruntfile:
+Let's start with an example Gruntfile:
 
 ```js
 module.exports = function(grunt) {
@@ -94,8 +96,27 @@ module.exports = function(grunt) {
 
 	// Default task to be run.
 	grunt.registerTask('default', ['clean', 'szyslak']);
+
+	// Run szyslak with a certain target
+	grunt.registerTask('production', ['clean', 'szyslak:mydomain.com']);
 };
 ```
+
+As you can see in the above example, the szyslak task can receive a target argument. The target is a simple string you can provide to help change the way the website is compiled for different situations or targets. For example, when you compile the website on your personal computer for testing, the target could be "localhost" (which is the default if no target is provided). When compiling for your web server, the target may be something like "mydomain.com". The current target is available in pages and templates for your inspection and usage. An example where this may be useful is if your website utilizes the `<base>` element in its layout template:
+
+```html
+<html>
+	<head>
+		<title><%= title %> | My Awesome Website</title>
+		<base href="http://<%= target %>/" />
+	<head>
+	<body>
+		<%= __content %>
+	</body>
+</html>
+```
+
+In the above example, the `href` attribute of the `base` element will hold "http://localhost/" when the `default` task is run, and "http://mydomain.com/" when the `production` task is run.
 
 ### Options
 
@@ -158,10 +179,14 @@ The `szyslak` tasks employs the following process to generate the site:
 2. If a templates directory exists, all HTML files in it are pre-processed with Lo-Dash, and the resulting template functions are saved into an object.
 3. If a vendor directory exists, and vendor files have been configured, they are copied to the site's `dist/` directory.
 4. Szyslak goes over all other files and directories under `src/` (recursively of course), and performs the following:
-	- If a file has an `.html` extension, its front matter (either YAML or JSON) is parsed (it doesn't have to have any), and the HTML content is rendered with Lo-Dash.
-	
-	  A context object is available inside the template, which includes all data objects from step 1, all fields from the front matter (if any), and the following four keys:
-	
+	- If a file has an `.html` extension, its front matter (either YAML or JSON) is parsed (it doesn't have to have any), and the HTML content is rendered with Lo-Dash (so even though the file is considered a "page", it is rendered as if it were a template).
+
+	  The resulting HTML content will be re-rendered into the layout template (`layout.html`). However, if a `template` field exists in the page's front matter, the page's content will first be rendered into that template, and only then into the layout template.
+
+	  A context object is available inside the page and all the templates in the chain. This object includes all data objects from step 1, all fields from the front matter (if any), and the following keys:
+
+		- `__content` - the HTML to embed in the template (only available in templates, not in pages themselves).
+		- `target` - the target argument, as explained earlier. Defaults to `localhost`.
 		- `path` - the relative path of the file inside `dist/`.
 		- `base` - the same as `path` but minus the extension.
 		- `title` - the same as `path`, it's just there to make sure every page has a title even if one was not provided in the front matter.
@@ -174,10 +199,8 @@ The `szyslak` tasks employs the following process to generate the site:
 		- `children` - see following paragraph.
 	
 	  If the YAML/JSON front matter of the file has a field called `needs_children` with a true value, Szyslak will look at all the subdirectories of the current working directory (just one level down) and look for a file named `index.html` in each of these directories. For all `index.html` files found, their front matter is loaded. An object with all these front matters will be added to the context object, under the field `children`. The keys of this object will be the names of the subdirectories, and the values are the parsed front matters.
-	
-	  If the YAML/JSON front matter of the file has a field called `template`, the content of the file will be rendered into that template before continuing to the next step. Notice this is not intended to replace the layout template. The rendered HTML will be the content rendered into the layout template. The same context object is available inside this template.
-	
-	  The resulting content is again rendered into the `layout.html` template (with the same context object). The resulting content is copied to the appropriate location in the `dist/` directory.
+
+	  The resulting HTML content of this process is copied to the appropriate location in the `dist/` directory.
 	- If the file has a `.roo` extension, it is compiled to CSS and minified, before being copied.
 	- If the file has a `.js` or `.css` extension, it is minified and copied.
 	- All other files are simply copied as is.
@@ -186,6 +209,7 @@ Note that apart from vendor files (see explanation above), directory structures 
 
 ## Release History
 
+* 2013-12-03   v1.4.0   Added the target task argument.
 * 2013-11-28   v1.3.0   Added relcwd (in context), template & needs_children (in front matter).
 * 2013-11-08   v1.2.0   Added the cwd, fs, os and grunt context variables.
 * 2013-10-28   v1.1.0   Added support for template nesting with the include function.

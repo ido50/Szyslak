@@ -27,7 +27,7 @@ module.exports = function(grunt) {
 	var cssmin	= require('clean-css');
 	var yfm	= require('yaml-front-matter');
 
-	grunt.registerTask('szyslak', 'static site generator with an attitude', function() {
+	grunt.registerTask('szyslak', 'static site generator with an attitude', function(target) {
 		var options = this.options({
 			templates_dir: "templates",
 			vendor_dir: "vendor",
@@ -51,6 +51,9 @@ module.exports = function(grunt) {
 		var data = {};
 		var compiled = {};
 		var i = 0;
+
+		data.target = arguments.length ? target : 'localhost';
+		grunt.log.writeln("Compiling website for "+data.target);
 
 		function compile_roole(file) {
 			roole.compile(grunt.file.read('./src/'+file), null, function(err, css) {
