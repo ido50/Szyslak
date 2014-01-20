@@ -2,7 +2,7 @@
 
 > Static site generator with an attitude
 
-Szyslak is a static site generator based on [Node.JS](http://nodejs.org/) and [Grunt](http://gruntjs.com/). It is designed for my personal needs and website building habits. While quite a lot of static site generators are available out there, I find that adapting yourself to them makes absolutely no sense. Having to structure my site's code according to the generator's own directory structure requirements alone kills these for me.
+Szyslak is a static site generator based on [Node.JS](http://nodejs.org/) and [Grunt](http://gruntjs.com/). It is designed for my personal needs and website building habits. While quite a lot of static site generators are available out there, I find that adapting yourself to them makes absolutely no sense. Having to structure my site's code according to the generators' required schemes alone kills them for me.
 
 **Don't use this! Create your own!** In my opinion, it is much better to have a framework that is adapted to your particular needs and methodologies. If you need a static site generator, I encourage you to create your own. Don't use this (unless it really fits your needs). If anything, use this as a reference for creating your own static site generator (not that I claim this one is properly written).
 
@@ -53,7 +53,8 @@ Here's an example directory structure:
 			layout.html
 			whatever.html
 		css/
-			styles.css
+			styles.roo
+			include.css
 		js/
 			main.js
 			other.js
